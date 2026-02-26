@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            JupiterWeb
+        </title>
+        <style>
+            
+            body{
+
+                background-color: #3c3c3c;
+                font-size: 16px;
+            }
+            header{
+                height: 15vh;
+                width: 100vw;
+                display: grid;
+            }
+            .gifzinho{
+                width: 100vw;
+                height: 5vh;
+            }
+            .usp{
+                margin: auto;
+                width: 50vw;
+                height: 10vh;
+            }
+            a{
+                color: white;
+                text-decoration-line: none;
+                
+            }
+            nav{
+                display: flex;
+                
+            }
+            @media(orientation: landscape){
+                nav{
+                    flex-direction: row;
+                }
+            }
+            @media(orientation: portrait){
+                nav{
+                    flex-direction: column;
+                }
+            }
+            
+        </style>
+    </head>
+    <body>
+        <header>
+            <img class="usp" href=" https://www5.usp.br/" src="https://uspdigital.usp.br/comumwebdev/imagens/cabecalho/usp-logo-texto.png">
+            <img class="gifzinho" src="https://uspdigital.usp.br/comumwebdev/imagens/cabecalho/bg-headtop.gif">
+
+        </header>
+        <nav>
+            <a href="https://uspdigital.usp.br/jupiterweb/jupArquivosPublicos.jsp?tiparq=9&anoprg=2026&codmnu=6863">Calendario</a>
+            <a href="https://uspdigital.usp.br/jupiterweb/jupCarreira.jsp?codmnu=8275">Cursos de ingresso</a>
+            <a href="https://uspdigital.usp.br/jupiterweb/jupDisciplinaBusca?tipo=D&codmnu=6755">Diciplinas</a>
+            <a href="https://uspdigital.usp.br/jupiterweb/esqueciSenha#">t</a>
+            <a>t</a>
+            <form >
+                <input type="number" placeholder="NUSP">
+                <input type="password" placeholder="Senha">
+                <input type="submit" value="Enviar">
+            </form>
+
+        </nav>
+    </body>
+</html>

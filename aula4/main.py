@@ -7,9 +7,11 @@ users=[]
 
 
 class User(BaseModel):
-    def __init__(name:str,idade: int): 
-        self.name=name
-        self.idade=idade
+    nome:str
+    idade:int
+    # def __init__(self, nome:str,idade: int): 
+    #     self.nome=nome
+    #     self.idade=idade
 
 @app.get('/', response_class=HTMLResponse)
 async def ex1():
@@ -169,11 +171,18 @@ async def ex1():
     </html>
     """
 
-@app.post("/users/")
+@app.post("/users")
 async def ex2(usuario:User):
-    #usuario=User(nome,idade)
     users.append(usuario)
+    
 
-@app.get("/users/")
-async def ex3():
-    return users
+@app.get("/users")
+async def ex3(index : int |None=None):
+    if index==None:
+        return users
+    else:
+        return users[index]
+    
+@app.delete("/users")
+async def ex4():
+    users.clear()

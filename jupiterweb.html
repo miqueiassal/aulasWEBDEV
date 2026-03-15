@@ -7,9 +7,10 @@
         <style>
             
             body{
-
+                display: flex;
+                flex-direction: column;
                 background-color: #3c3c3c;
-                font-size: 16px;
+                font-size: large;
             }
             header{
                 height: 15vh;
@@ -22,25 +23,53 @@
             }
             .usp{
                 margin: auto;
+                min-width: 50vw;
+                max-height: 10vh;
+            }
+           
+
+            form{
+                display: flex;
+                flex-direction: column;
+            }
+            input{
+                margin: auto;
+                margin-bottom: 3vh;
+                max-height:10vw;
                 width: 50vw;
-                height: 10vh;
+            }
+            ul{
+                list-style-type: none;
+                margin: 0;
+                padding: 0;
+                display: flex;
+                color: #2b2b2b;
+                
+                
             }
             a{
-                color: white;
-                text-decoration-line: none;
-                
+                color:white;
+                text-decoration: none;
+                text-align: center;
             }
-            nav{
-                display: flex;
+            li a{
+               display: block;
                 
+                padding: 8px 16px;
+             
             }
+            li a:hover {
+                background-color: red;
+                
+                }
+            
             @media(orientation: landscape){
-                nav{
+                ul{
                     flex-direction: row;
                 }
             }
             @media(orientation: portrait){
-                nav{
+                ul{
                     flex-direction: column;
                 }
             }
@@ -53,18 +82,18 @@
             <img class="gifzinho" src="https://uspdigital.usp.br/comumwebdev/imagens/cabecalho/bg-headtop.gif">
 
         </header>
-        <nav>
-            <a href="https://uspdigital.usp.br/jupiterweb/jupArquivosPublicos.jsp?tiparq=9&anoprg=2026&codmnu=6863">Calendario</a>
-            <a href="https://uspdigital.usp.br/jupiterweb/jupCarreira.jsp?codmnu=8275">Cursos de ingresso</a>
-            <a href="https://uspdigital.usp.br/jupiterweb/jupDisciplinaBusca?tipo=D&codmnu=6755">Diciplinas</a>
-            <a href="https://uspdigital.usp.br/jupiterweb/esqueciSenha#">t</a>
-            <a>t</a>
+        <ul>
+           <li><a href="https://uspdigital.usp.br/jupiterweb/jupArquivosPublicos.jsp?tiparq=9&anoprg=2026&codmnu=6863">Calendario</a></li> 
+            <li><a href="https://uspdigital.usp.br/jupiterweb/jupCarreira.jsp?codmnu=8275">Cursos de ingresso</a></li>
+            <li><a href="https://uspdigital.usp.br/jupiterweb/jupDisciplinaBusca?tipo=D&codmnu=6755">Diciplinas</a></li>
+            
+        </ul>   
             <form >
                 <input type="number" placeholder="NUSP">
                 <input type="password" placeholder="Senha">
                 <input type="submit" value="Enviar">
             </form>
-
-        </nav>
+            <a href="https://uspdigital.usp.br/jupiterweb/esqueciSenha#">Esqueci a Senha</a>
+        
     </body>
 </html>

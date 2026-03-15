@@ -1,19 +1,22 @@
+
 {% extends "home.html" %}
 
-{% block conteudo %}
+
+{%block conteudo %}
         <form>
-            <input id="nome" type="text" >
-            <input id="senha" type="text" >
-            <input id="bio" type="text" >
-            <input id="botao" type="button" onclick="EnviarUsuario()">
+            <input id="nome" type="text" placeholder="Nome">
+            <input id="senha" type="text" placeholder="Senha">
+            <input id="bio" type="text" placeholder="bio">
+            <input id="botao" type="button" value="Enviar" onclick="EnviarUsuario()">
         </form>
         <script>
             async function EnviarUsuario() {
                 const dados={
-                    nome : Document.getElementById('nome').value,
-                    senha : Document.getElementById('senha').value,
-                    bio : Document.getElementById('bio').value
-                }
+                    nome : document.getElementById('nome').value,
+                    senha : document.getElementById('senha').value,
+                    bio : document.getElementById('bio').value
+                };
+
                 const resposta = await fetch('/usuarios', {
                     method: 'POST',
                     headers: {
@@ -31,5 +34,6 @@
                 
             }
         </script>
-    {% endblock %}
+        {% endblock %}
+ 
   

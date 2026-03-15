@@ -1,0 +1,38 @@
+
+{% extends "home.html" %}
+
+
+{%block conteudo %}
+        <form>
+            <input id="nome" type="text" placeholder="Nome">
+            <input id="senha" type="text" placeholder="Senha">
+         
+            <input id="botao" type="button" value="Enviar" onclick="EnviarUsuario2()">
+        </form>
+        <script>
+            async function EnviarUsuario2() {
+                const dados={
+                    name : document.getElementById('nome').value,
+                    password : document.getElementById('senha').value
+                };
+
+                const resposta = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(dados)
+                });
+
+                // if (resposta.ok) {
+                //     const resultado = await resposta.json();
+                //     alert("Usuário " + resultado.usuario + " encontrado!");
+                // } else {
+                //     alert("Não encontrado");
+                // }
+                
+            }
+        </script>
+        {% endblock %}
+  
+  

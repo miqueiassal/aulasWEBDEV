@@ -2,36 +2,7 @@
     <head><title>Minha Aula de FastAPI</title></head>
     <body>
         <nav>titulo</nav>
-          <form>
-            <input id="nome" type="text" >
-            <input id="senha" type="text" >
-            <input id="bio" type="text" >
-            <input id="botao" type="button" onclick="EnviarUsuario()">
-        </form>
-        <script>
-            async function EnviarUsuario() {
-                const dados={
-                    nome : Document.getElementById('nome').value,
-                    senha : Document.getElementById('senha').value,
-                    bio : Document.getElementById('bio').value
-                }
-                const resposta = await fetch('/usuarios', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dados)
-                });
-
-                if (resposta.ok) {
-                    const resultado = await resposta.json();
-                    alert("Usuário " + resultado.usuario + " criado!");
-                } else {
-                    alert("Erro ao enviar!");
-                }
-                
-            }
-        </script>
+          {% block conteudo %}{% endblock %}
         
     </body>
     

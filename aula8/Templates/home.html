@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <header>
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script>
+        <title>Exercicio 8</title>
+    </header>
+    <body>
+        <button 
+            hx-post="/curtir"
+            hx-target="h1"
+            hx-swap="innerHTML">clica</button>
+
+        <main hx-get="{{ pagina }}"
+              hx-target="main"
+              hx-trigger="load"
+              hx-push-url="true">
+        </main>
+        <button 
+            hx-delete="/curtir"
+            hx-confirm="Mensagem de confirmação"
+            hx-target="h1"
+            hx-swap="innerHTML">clica</button>
+    </body>
+</html>

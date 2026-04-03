@@ -1,0 +1,28 @@
+<DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <title>Meu Site</title>
+        <link rel="stylesheet" href="{{ estilo }}">
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script> <!-- Import do HTMX -->
+    </head>
+    <body>
+        <h1>Site de Avaliar Animes Genérico!</h1>
+        <p>site</p>
+        <nav>
+          <button hx-get="/obras"
+		  hx-trigger="click"
+                    hx-target="main">
+                Obras
+            </button>
+            <button >
+                Página 2
+            </button>
+        </nav>
+        <hr>
+         <main hx-get="{{ pagina }}"
+              hx-target="main"
+              hx-trigger="load"
+              hx-push-url="true">
+        </main>
+    </body>
+</html>

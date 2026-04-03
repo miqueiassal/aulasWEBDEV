@@ -19,34 +19,33 @@ class Post(SQLModel, table=True):
     comentarios:Optional[str]
 
 class Amigos(SQLModel, table=True):
-    usuario1_id: Optional[int]= Field(
-        default=None,
-        foreign_key="usuario.id",
-        primary_key=True,
+    usuario_id: Optional[int] = Field(
+        default=None, foreign_key="usuario.id", primary_key=True
     )
-    usuario2_id: Optional[int]= Field(
-        default=None,
-        foreign_key="usuario.id",
-        primary_key=True,
+    amigo_id: Optional[int] = Field(
+        default=None, foreign_key="usuario.id", primary_key=True
     )
     
+    
 class Usuario(SQLModel, table=True):
-    id: Optional[int]= Field(
+    id : Optional[int]= Field(
         default=None,
         primary_key=True
         )
-    nome: str
-    email: str = Field(index=True, unique=True)
-    username:str = Field(index=True, unique=True)
-    consumidores: List["Obra"] = Relationship(
-        back_populates="usuario",
+    username : str= Field(unique=True)
+    senha : str 
+    bio: Optional[str]
+    obras: List["Obra"] = Relationship(
+        back_populates="usuarios",
         link_model=Post,
     )
-    amigos: List["Usuarios"] = Relationship(
-        back_populates="usuario",
+    amigos: List["Usuario"] = Relationship(
+        sa_relationship_kwargs={
+            "primaryjoin": "Usuario.id==Amigos.usuario_id",
+            "secondaryjoin": "Usuario.id==Amigos.amigo_id",
+        },
         link_model=Amigos,
-    )
-    
+    )   
 
 
 class Obra(SQLModel, table=True):
@@ -58,8 +57,8 @@ class Obra(SQLModel, table=True):
     genero0: Optional[str]
     genero1: Optional[str]
     genero2: Optional[str]
-    consumidores: List["Usuario"] = Relationship(
-        back_populates="obra",
+    usuarios: List["Usuario"] = Relationship(
+        back_populates="obras",
         link_model=Post,
     )
     numeroVisto:int=0

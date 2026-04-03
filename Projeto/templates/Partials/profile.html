@@ -1,0 +1,10 @@
+<hi>{{nome}}</h1>
+<div>
+<ul>
+  {%for u in {{amigos}}%}
+   <li> {{ u.username }}</li>
+   {% else %}
+            <li>Não há alunos</li>
+        {% endfor %}
+    </ul>
+</div>

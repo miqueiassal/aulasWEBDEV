@@ -1,9 +1,14 @@
-from fastapi import FastAPI
-from typing import List, Optional
+from fastapi import FastAPI, Depends, HTTPException, status, Cookie, Response, Request, Form
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from typing import List, Optional, Annotated
 from sqlmodel import Session, select, SQLModel, create_engine
 from contextlib import asynccontextmanager
-from database import Post, Usuario, Obra 
+from database import Post,Amigos, Usuario, Obra
 
+
+#Criar database
 arquivo_sqlite = "Projeto.db"
 url_sqlite = f"sqlite:///{arquivo_sqlite}"
 
@@ -21,13 +26,84 @@ async def initFunction(app: FastAPI):
 
 app = FastAPI(lifespan=initFunction)
 
-@app.post("/usuario")
-async def criarusuario(usuario: Usuario):
+    
+#Html css e javaScript
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory=["templates", "templates/Partials"])
+##Variaveis Globais
+
+
+#verifar se esta logado
+def get_active_user(session_user: Annotated[str | None, Cookie()] = None):
+    # O FastAPI busca automaticamente um cookie chamado 'session_user'
+    if not session_user:
+        return False
     with Session(engine) as session:
+        usuario = session.exec(select(Usuario).where(Usuario.username == session_user)).first()
+    if not usuario:
+        return False
+    
+    return user
+
+@app.get("/")
+async def home(request: Request, usuario: bool |Usuario = Depends(get_active_user)):
+    if user==False:
+        return templates.TemplateResponse(
+            request=request, 
+            name="home.html", 
+            context={"pagina":"/login"}
+        )
+
+    amigos=usuario.amigos
+    return templates.TemplateResponse(
+        request=request, 
+        name="home.html", 
+        context={
+            "pagina":"profile.html",
+            "nome": usuario.username,
+            "amigos": amigos,
+            "obras":obras,
+            
+        }
+    )
+
+@app.get("/login", response_class=HTMLResponse)
+async def pagLogin(request: Request):
+    if (not "HX-Request" in request.headers):
+        return templates.TemplateResponse(request, "home.html", {"pagina": "/login"})
+    return templates.TemplateResponse(request, "login.html")
+
+@app.post("/login")
+async def logar(request:Request,response: Response, username: str = Form(...),senha:str = Form(...)):
+    with Session(engine) as session:
+        usuario = session.exec(select(Usuario).where(Usuario.username == username,Usuario.senha==senha)).first()
+        if not usuario:
+             raise HTTPException(404, "Usuário não encontrado")
+        response.set_cookie(key="session_user", value=username)
+     
+        amigos =usuario.amigos
+
+        return templates.TemplateResponse(
+        request=request, 
+        name="home.html", 
+        context={
+            "pagina":"profile.html",
+            "nome": usuario.username,
+            "amigos": amigos,
+            "obras":usuario.obras,
+          
+        }
+    )
+    
+@app.post("/usuario", response_class=HTMLResponse)
+async def criarusuario(username: str =Form(...),senha=Form(...)):
+#async def criarUsuario(usuario:Usuario):
+    with Session(engine) as session:
+        usuario = Usuario(username=username,senha=senha)
         session.add(usuario)
         session.commit()
         session.refresh(usuario)
-        return usuario
+        return HTMLResponse(content=f"<p>Usuario(a) {usuario.username} criado(a)!</p>")
     
 @app.post("/obras")
 async def registrarObras(obra: Obra):
@@ -42,6 +118,7 @@ async def postar(
         username:str,
         obraNome:str,
         tipo:str,
+        meta:Optional[int],
         visto: Optional[int],
         reacao:Optional[int],
         comentarios:Optional[str]
@@ -65,7 +142,7 @@ async def postar(
         return post
 
 @app.patch("/post")
-def mudarPost(
+async def mudarPost(
         username:str,
         obraNome:str,
         tipo:str,

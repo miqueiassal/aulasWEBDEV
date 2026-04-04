@@ -6,8 +6,7 @@
 </form>
 <h1>Criar conta</h1>
 <form hx-post="/usuario"
-      hx-target="#mensagem"
-      hx-swap="beforeend">
+      hx-target="none">
  
   <input type="text" name="username" placeholder="username" required>
   <input type="password" name="senha" placeholder="senha" required>
@@ -15,4 +14,4 @@
   <button type="submit">Criar</button>
 </form>
 
-<div id="mensagem"></div>
+

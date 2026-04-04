@@ -1,0 +1,34 @@
+<h1>obras</h1>
+<div>
+  <ul>
+    {%for obra in obras%}
+    <li>
+      <button hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
+		hx-trigger="click"
+                hx-target="main"
+		hx-push-url="true">
+	  {{obra.nome}}
+      </button>
+    </li>
+    {% else %}
+      <li>não há obras</li>
+    {% endfor %}
+  </ul>
+</div>
+<h1>Registrar obra</h1>
+
+<form hx-post="/obras"
+      hx-target="#mensagem"
+      hx-swap="beforeend">
+  <input type="text" name="nome" placeholder="nome" required>
+  <select name="tipo">
+    <option value="anime">anime</option>
+    <option value="manga">manga</option> 
+  </select>
+  <input type="number" name="anoLancamento" placeholder="Ano de lançamento" >
+  <input type="text" name="descricao" placeholder="descrição">
+  <input type="text" name="genero1" placeholder="Gênero">
+  <input type="text" name="genero2" placeholder="Gênero" >
+  <input type="text" name="genero3" placeholder="Gênero">
+  <button type="submit">Registrar</button>
+</form>

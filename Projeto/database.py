@@ -13,10 +13,10 @@ class Post(SQLModel, table=True):
         foreign_key="obra.id",
         primary_key=True,
     )
-    visto:bool
-    meta:Optional[int]
-    reacao:int=0
-    comentarios:Optional[str]
+    visto:str
+    meta:Optional[int]=Field(default=None)
+    reacao:Optional[str]
+    comentarios:Optional[str]= Field(default=None)
 
 class Amigos(SQLModel, table=True):
     usuario_id: Optional[int] = Field(
@@ -51,18 +51,15 @@ class Usuario(SQLModel, table=True):
 class Obra(SQLModel, table=True):
     id: Optional[int]= Field(default=None, primary_key=True)
     nome: str
-    descricao: Optional[str]=None
-    anoLancamento: Optional[int]=None
+    descricao: Optional[str]
+    anoLancamento: Optional[int]
     tipo:str
-    genero0: Optional[str]
     genero1: Optional[str]
     genero2: Optional[str]
+    genero3: Optional[str]
     usuarios: List["Usuario"] = Relationship(
         back_populates="obras",
         link_model=Post,
     )
-    numeroVisto:int=0
-    numeroVera:int=0
-    reacoes:int=0
-    reacoesPositivas:int=0
+
 

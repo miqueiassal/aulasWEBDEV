@@ -1,10 +1,61 @@
-<hi>{{nome}}</h1>
+<hi>nome {{ nome }}</h1>
+<button hx-get="/logout"
+	hx-trigger="click"
+        hx-target="main">
+  sair
+</button>
 <div>
-<ul>
-  {%for u in {{amigos}}%}
-   <li> {{ u.username }}</li>
-   {% else %}
-            <li>Não há alunos</li>
-        {% endfor %}
-    </ul>
+  <ul>
+    {%for u in amigos%}
+      <li> {{ u.username }}</li>
+    {% else %}
+      <li>Você não tem amigos</li>
+    {% endfor %}
+  </ul>
 </div>
+<div>
+  <ul>
+    {%for obra in obras%}
+    <li>
+      <a hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
+		hx-trigger="click"
+                hx-target="main"
+		hx-push-url="true">
+	  {{obra.nome}}
+      </a>
+      {%for post in posts%}
+         {%if post.obra_id==obra.id%}
+          
+        
+      <p>{{post.visto}},{{post.reacao}},{{post.comentarios}},{{post.meta}}</p>
+      {%endif%}
+      {%endfor%}
+    </li>
+    {% else %}
+      <li>não há obras</li>
+    {% endfor %}
+  </ul>
+</div>
+<form hx-post="/post">
+  <input type="text" name="obraNome" placeholder="nome" required>
+  <select name="tipo">
+    <option value="anime">anime</option>
+    <option value="manga">manga</option> 
+  </select>
+  
+  <select name="visto">
+    <option value="Visto">visto</option>
+    <option value="Na meta">Na meta</option>
+  </select>
+  
+  <input type="text" name="comentarios" placeholder="Comentários">
+  
+  <select name="reacao">
+    <option value="Neutro">neutro</option>
+    <option value="Gostei">Gostei</option>
+    <option value="Odiei">Odiei</option>
+  </select>
+  <input type="number" name="meta" placeholder="Quando?">
+  <button type="submit">Registrar</button>
+</form>
+      

@@ -2,7 +2,7 @@
 <html lang="pt-br">
     <head>
         <title>Meu Site</title>
-        <link rel="stylesheet" href="{{ estilo }}">
+        <link rel="stylesheet" href="/static/style.css">
         <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script> <!-- Import do HTMX -->
     </head>
     <body>
@@ -11,11 +11,15 @@
         <nav>
           <button hx-get="/obras"
 		  hx-trigger="click"
-                    hx-target="main">
+                  hx-target="main"
+		  hx-push-url="true">
                 Obras
             </button>
-            <button >
-                Página 2
+          <button hx-get="/perfil"
+		  hx-trigger="click"
+                  hx-target="main"
+		  hx-push-url="true">
+                perfil
             </button>
         </nav>
         <hr>
@@ -23,6 +27,7 @@
               hx-target="main"
               hx-trigger="load"
               hx-push-url="true">
-        </main>
+         </main>
+	 <div id="mensagem"></div>
     </body>
 </html>

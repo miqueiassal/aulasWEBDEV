@@ -6,13 +6,28 @@
 </button>
 <div>
   <ul>
-    {%for u in amigos%}
+    {%for u in seguidores%}
       <li> {{ u.username }}</li>
     {% else %}
-      <li>Você não tem amigos</li>
+      <li>Você não tem seguidores</li>
+    {% endfor %}
+  </ul>
+   <ul>
+    {%for u in seguindo%}
+      <li> {{ u.username }}</li>
+    {% else %}
+      <li>Você não segue ninguem</li>
     {% endfor %}
   </ul>
 </div>
+<div>
+  <form  hx-post="/seguir">
+    <input type="text" name="seguindo_nome" placeholder="nome">
+     <button type="submit">Seguir</button>
+  </form>
+  
+</div>
+
 <div>
   <ul>
     {%for obra in obras%}

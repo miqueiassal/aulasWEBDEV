@@ -18,12 +18,25 @@ class Post(SQLModel, table=True):
     reacao:Optional[str]
     comentarios:Optional[str]= Field(default=None)
 
-class Amigos(SQLModel, table=True):
-    usuario_id: Optional[int] = Field(
-        default=None, foreign_key="usuario.id", primary_key=True
+class Seguir(SQLModel, table=True):
+    seguindo_id: Optional[int] = Field(
+        default=None,
+        foreign_key="usuario.id",
+        primary_key=True
     )
-    amigo_id: Optional[int] = Field(
-        default=None, foreign_key="usuario.id", primary_key=True
+    seguindo:Optional["Usuario"]= Relationship(
+        back_populates="seguidores",
+        sa_relationship_kwargs={"foreign_keys":"Seguir.seguindo_id"},
+    )
+    
+    seguidor_id: Optional[int] = Field(
+        default=None,
+        foreign_key="usuario.id",
+        primary_key=True
+    )
+    seguidor:Optional["Usuario"]= Relationship(
+        back_populates="seguindo",
+        sa_relationship_kwargs={"foreign_keys":"Seguir.seguidor_id"},
     )
     
     
@@ -39,18 +52,26 @@ class Usuario(SQLModel, table=True):
         back_populates="usuarios",
         link_model=Post,
     )
-    amigos: List["Usuario"] = Relationship(
+    seguidores: List["Seguir"] = Relationship(
+        back_populates="seguindo",
         sa_relationship_kwargs={
-            "primaryjoin": "Usuario.id==Amigos.usuario_id",
-            "secondaryjoin": "Usuario.id==Amigos.amigo_id",
+            "foreign_keys": "Seguir.seguindo_id",
+            "lazy": "selectin",
         },
-        link_model=Amigos,
+        
     )   
-
+    seguindo: List["Seguir"] = Relationship(
+        back_populates="seguidor",
+        sa_relationship_kwargs={
+            "foreign_keys": "Seguir.seguidor_id",
+            "lazy": "selectin",
+        },
+    )
 
 class Obra(SQLModel, table=True):
     id: Optional[int]= Field(default=None, primary_key=True)
     nome: str
+    chave:str
     descricao: Optional[str]
     anoLancamento: Optional[int]
     tipo:str

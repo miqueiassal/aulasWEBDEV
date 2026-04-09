@@ -375,8 +375,11 @@ async def seguir(
             session.add(seguir)
             session.commit()
             session.refresh(seguir)
-            
-        return
+            seguindo= session.exec(select(Usuario)
+                                  .join(Seguir, Seguir.seguidor_id==seguidor.id)
+                                  .where(Usuario.id==Seguir.seguindo_id)).all()
+            return templates.TemplateResponse(request, "listaSeguindo.html", {"seguindo":seguindo})
+       
     else:
         return templates.TemplateResponse(
             request=request, 

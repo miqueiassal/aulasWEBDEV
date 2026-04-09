@@ -1,38 +1,53 @@
 <div id="listaPosts">
-    <ul >
-    {%for obra in obras%}
+  <ul >
+    {% for obra in obras %}
     <li>
-      <a hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
-		hx-trigger="click"
-                hx-target="main"
-		hx-push-url="true">
-	  {{obra.nome}}
-      </a>
-      {%for post in posts%}
-        {%if post.obra_id==obra.id%}
-            <form  hx-put="/post/{{obra.tipo}}/{{obra.chave}}"
-                   hx-target="#listaPosts">
-              <select name="visto">
-                <option value="Visto">visto</option>
-                <option value="Na meta">Na meta</option>
-              </select>
-              
-              <input type="text" name="comentarios" placeholder="Comentários">
-              
-              <select name="reacao">
-                <option value="Neutro">neutro</option>
-                <option value="Gostei">&#128077</option>
-                <option value="Odiei">&#128078</option>
-              </select>
-              <input type="number" name="meta" placeholder="Quando?">
-              <button type="submit">Atualizar</button>
-            </form>
-            <p>{{post.visto}},{{post.reacao}}{%if post.comentarios%},{{post.comentarios}}{%endif%}{%if post.meta%},{{post.meta}}{%endif%}</p>
-      {%endif%}
-      {%endfor%}
+      
+   
+      <h1 hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
+	 hx-trigger="click"
+         hx-target="main"
+	 hx-push-url="true">
+	{{obra.nome}}
+      </h1>
+   
+      {% for post in posts %}
+      {% if post.obra_id==obra.id %}
+    
+   
+      <p>{{post.visto}},{{post.reacao}}
+	{%if post.comentarios%}
+	,{{post.comentarios}}
+	{% endif %}
+	{%if post.meta %}
+	,{{post.meta}}
+	{% endif %}</p>
+      {% endif %}
+      {% endfor %}
+      
+      <form  hx-put="/post/{{obra.tipo}}/{{obra.chave}}"
+             hx-target="#listaPosts">
+	<select name="visto">
+          <option value="Visto">visto</option>
+          <option value="Na meta">Na meta</option>
+	</select>
+	
+	<input type="text" name="comentarios" placeholder="Comentários">
+	
+	<select name="reacao">
+          <option value="Neutro">neutro</option>
+          <option value="Gostei">&#128077</option>
+          <option value="Odiei">&#128078</option>
+	</select>
+	<input type="number" name="meta" placeholder="Quando?">
+	<button type="submit">Atualizar</button>
+      </form>
+      <button hx-delete="/post/{{obra.tipo}}/{{obra.chave}}"
+	      hx-trigger="click"
+	      hx-target="#listaPosts">apagar post</button>
     </li>
     {% else %}
-      <li>não há obras</li>
+    <li>não há obras</li>
     {% endfor %}
   </ul>
 </div>

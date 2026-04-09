@@ -1,10 +1,67 @@
-body{
+
+body {
     display: flex;
     flex-direction: column;
     background-color: #3c3c3c;
     font-size: large;
 }
+div{
+    display:flex;
+    margin:auto;
+}
+header{
+    height: 15vh;
+    width: 100vw;
+    display: grid;
+}
+form{
+    display: flex;
+    flex-direction: column;
+    margim:auto;
 
+}
 
+input {
+    margin: auto;
+    margin-bottom: 3vh;
+    max-height:10vw;
+    width: 50%;
+}
+select{
+    margin: auto;
+    margin-bottom: 3vh;
+    max-height:10vw;
+    width: 50%;
+}
+form button{
+    margin: auto;
+    margin-bottom: 3vh;
+    max-height:10vw;
+    width: 50%;
+}
+a{
+    color:white;
+    text-decoration: none;
+    text-align: center;
+}
+li a{
+    display: block;
+    
+    padding: 8px 16px;
+    
+}
+li a:hover {
+    background-color: red;
+    
+}
 
-
+@media(orientation: landscape){
+    ul{
+        flex-direction: row;
+    }
+}
+@media(orientation: portrait){
+    ul{
+        flex-direction: column;
+    }
+}

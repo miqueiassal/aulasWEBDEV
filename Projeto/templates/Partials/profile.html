@@ -4,23 +4,31 @@
         hx-target="main">
   sair
 </button>
+<button hx-delete="/usuario"
+	hx-trigger="click"
+        hx-target="main">
+  sair
+</button>
 <div id="listaSeguindo"
      hx-get="/seguindo"
+     hx-target="#listaSeguindo"
      hx-trigger="load"
-     hx-push-url="false"
-<div>
-  <form  hx-post="/seguir">
-    <input type="text" name="seguindo_nome" placeholder="nome">
-     <button type="submit">Seguir</button>
-  </form>
-  
+     hx-push-url="false">
 </div>
+<form  hx-post="/seguir">
+  <input type="text" name="seguindo_nome" placeholder="nome">
+  <button type="submit">Seguir</button>
+</form>
+  
+
 
 <div id="listaPosts"
      hx-get="/listaPost"
      hx-trigger="load"
      hx-push-url="false"
-     hx-target="#listaPosts"></div>
+     hx-target="#listaPosts">
+</div>
+
 <form hx-post="/post"
       hx-push-url="false"
       hx-target="#listaPosts"

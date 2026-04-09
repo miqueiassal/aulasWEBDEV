@@ -1,25 +1,15 @@
 <h1>obras</h1>
-<div>
-  <ul>
-    {%for obra in obras%}
-    <li>
-      <button hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
-		hx-trigger="click"
-                hx-target="main"
-		hx-push-url="true">
-	  {{obra.nome}}
-      </button>
-    </li>
-    {% else %}
-      <li>não há obras</li>
-    {% endfor %}
-  </ul>
-</div>
+<div id="listaObras"
+     hx-get={{obras}}
+     hx-trigger="load"
+     hx-target="#listaObras"
+     hx-push-url="false"></div>
 <h1>Registrar obra</h1>
 
 <form hx-post="/obras"
-      hx-target="#mensagem"
-      hx-swap="beforeend">
+      hx-target="#listaObras"
+      hx-swap="outerHTML"
+      hx-push-url="false">
   <input type="text" name="nome" placeholder="nome" required>
   <select name="tipo">
     <option value="anime">anime</option>
@@ -27,8 +17,45 @@
   </select>
   <input type="number" name="anoLancamento" placeholder="Ano de lançamento" >
   <input type="text" name="descricao" placeholder="descrição">
-  <input type="text" name="genero1" placeholder="Gênero">
-  <input type="text" name="genero2" placeholder="Gênero" >
-  <input type="text" name="genero3" placeholder="Gênero">
+  <select name="genero1">
+    <option value=""></option>
+    <option value="Shōnen">Shōnen</option>
+    <option value="Shōjo">Shōjo</option>
+    <option value="Seinen">Seinen</option>
+    <option value="Josei">Josei</option>
+  </select>
+  <select name="genero2">
+    <option value=""></option>
+    <option value="Romance">Romance</option>
+    <option value="Comédia">Comédia</option>
+    <option value="Cotidiano">Cotidiano</option>
+    <option value="Ação">Ação</option>
+    <option value="Drama">Drama</option>
+    <option value="Aventura">Aventura</option>
+    <option value="Mistério">Mistério</option>
+    <option value="SCi-Fi">SCi-Fi</option>
+    <option value="Terror">Terror</option>
+    <option value="Histórico">Histórico</option>
+    <option value="Fantasia">Fantasia</option>
+    <option value="Isekai">Isekai</option>
+    <option value="Esportivo"></option>
+  </select>
+  <select name="genero3">
+    <option value=""></option>
+    <option value="Romance">Romance</option>
+    <option value="Comédia">Comédia</option>
+    <option value="Cotidiano">Cotidiano</option>
+    <option value="Ação">Ação</option>
+    <option value="Drama">Drama</option>
+    <option value="Aventura">Aventura</option>
+    <option value="Mistério">Mistério</option>
+    <option value="SCi-Fi">SCi-Fi</option>
+    <option value="Terror">Terror</option>
+    <option value="Histórico">Histórico</option>
+    <option value="Fantasia">Fantasia</option>
+    <option value="Isekai">Isekai</option>
+    <option value="Esportivo"></option>
+  </select>
   <button type="submit">Registrar</button>
 </form>
+

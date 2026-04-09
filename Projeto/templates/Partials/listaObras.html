@@ -1,0 +1,16 @@
+<div id="listaObras">
+  <ul >
+    {%for obra in obras%}
+    <li>
+      <button hx-get="/obras/{{obra.tipo}}/{{obra.chave}}"
+		hx-trigger="click"
+        hx-target="main"
+		hx-push-url="true">
+	  {{obra.nome}}
+      </button>
+    </li>
+    {% else %}
+      <li>não há obras</li>
+    {% endfor %}
+  </ul>
+</div>

@@ -1,0 +1,17 @@
+<div id="listaSeguindo">
+  <ul>
+    {%for u in seguidores%}
+      <li> {{ u.username }}</li>
+    {% else %}
+      <li>Você não tem seguidores</li>
+    {% endfor %}
+  </ul>
+   <ul>
+    {%for u in seguindo%}
+      <button hx-get="amigo/{{u.usarname}}"> {{ u.username }}</button>
+      <button hx-delete="/seguir/{{user}}"
+    {% else %}
+      <li>Você não segue ninguem</li>
+    {% endfor %}
+  </ul>
+</div>

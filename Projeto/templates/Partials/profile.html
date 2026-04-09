@@ -4,22 +4,10 @@
         hx-target="main">
   sair
 </button>
-<div>
-  <ul>
-    {%for u in seguidores%}
-      <li> {{ u.username }}</li>
-    {% else %}
-      <li>Você não tem seguidores</li>
-    {% endfor %}
-  </ul>
-   <ul>
-    {%for u in seguindo%}
-      <li> {{ u.username }}</li>
-    {% else %}
-      <li>Você não segue ninguem</li>
-    {% endfor %}
-  </ul>
-</div>
+<div id="listaSeguindo"
+     hx-get="/seguindo"
+     hx-trigger="load"
+     hx-push-url="false"
 <div>
   <form  hx-post="/seguir">
     <input type="text" name="seguindo_nome" placeholder="nome">
@@ -28,30 +16,15 @@
   
 </div>
 
-<div>
-  <ul>
-    {%for obra in obras%}
-    <li>
-      <a hx-get="/obras/{{obra.tipo}}/{{obra.nome}}"
-		hx-trigger="click"
-                hx-target="main"
-		hx-push-url="true">
-	  {{obra.nome}}
-      </a>
-      {%for post in posts%}
-         {%if post.obra_id==obra.id%}
-          
-        
-      <p>{{post.visto}},{{post.reacao}},{{post.comentarios}},{{post.meta}}</p>
-      {%endif%}
-      {%endfor%}
-    </li>
-    {% else %}
-      <li>não há obras</li>
-    {% endfor %}
-  </ul>
-</div>
-<form hx-post="/post">
+<div id="listaPosts"
+     hx-get="/listaPost"
+     hx-trigger="load"
+     hx-push-url="false"
+     hx-target="#listaPosts"></div>
+<form hx-post="/post"
+      hx-push-url="false"
+      hx-target="#listaPosts"
+      hx-select="#listaPosts">
   <input type="text" name="obraNome" placeholder="nome" required>
   <select name="tipo">
     <option value="anime">anime</option>
@@ -67,8 +40,8 @@
   
   <select name="reacao">
     <option value="Neutro">neutro</option>
-    <option value="Gostei">Gostei</option>
-    <option value="Odiei">Odiei</option>
+    <option value="Gostei">&#128077</option>
+    <option value="Odiei">&#128078</option>
   </select>
   <input type="number" name="meta" placeholder="Quando?">
   <button type="submit">Registrar</button>

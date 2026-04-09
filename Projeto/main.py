@@ -104,22 +104,14 @@ async def perfil(request: Request, temUsuario: [bool,str] = Depends(get_active_u
         seguidores = session.exec(select(Usuario)
                                   .join(Seguir, Seguir.seguindo_id==usuario.id)
                                   .where(Usuario.id==Seguir.seguidor_id)).all()
-        #seguidores=usuario.seguidores
-        seguindo= session.exec(select(Usuario)
-                                  .join(Seguir, Seguir.seguidor_id==usuario.id)
-                                  .where(Usuario.id==Seguir.seguindo_id)).all()
+        
         posts= session.exec(select(Post).where(Post.usuario_id == usuario.id)).all()
         return templates.TemplateResponse(
             request=request, 
             name="profile.html", 
             context={
                 "nome": usuario.username,
-                "seguidores":seguidores,
-                "seguindo":seguindo,
-                "posts": posts,
-                "obras":usuario.obras
-    
-            
+                "seguidores":seguidores      
             }
         ) 
 
@@ -151,7 +143,7 @@ async def pagObras(request: Request):
         obras=session.exec(select(Obra)).all()
     return templates.TemplateResponse(request,
                                       "obras.html",
-                                      context={"obras":obras}
+                                      context={"obras":"/listaObras"}
                                       )
 
 @app.delete("/usuario")
@@ -191,9 +183,15 @@ async def pagObras(request: Request, tipo:str,chave:str):
                                                    "naMeta":naMeta
                                                    }
                                           )
-    
+@app.get("/listaObras", response_class=HTMLResponse)
+async def lista(request: Request):
+    with Session(engine) as session:
+        obras=session.exec(select(Obra)).all()
+        return templates.TemplateResponse(request, "listaObras.html", {"obras": obras})
+
 @app.post("/obras", response_class=HTMLResponse)
 async def registrarObras(
+        request:Request,
         nome:str=Form(...),
         tipo:str=Form(...),
         descricao:Optional[str]=Form(None),
@@ -203,42 +201,50 @@ async def registrarObras(
         genero3:Optional[str]=Form(None)
 ):
     with Session(engine) as session:
-        chave=nome.replace(" ","")
-        chave = chave.lower()
-        obra=Obra(
-            nome=nome,
-            descricao=descricao,
-            chave=chave,
-            tipo=tipo,
-            anoLancamento=anoLancamento,
-            genero1=genero1,
-            genero2=genero2,
-            genero3=genero3
-        )
-        
-        session.add(obra)
-        session.commit()
-        session.refresh(obra)
-        return HTMLResponse(content=f"<p>Obra {obra.nome} registrada!</p>")
+        obraTeste=session.exec(select(Obra).where(Obra.nome == nome.lower(),Obra.tipo==tipo)).first()
+        if not obraTeste:
+            chave=nome.replace(" ","")
+            chave = chave.lower()
+            obra=Obra(
+                nome=nome.lower(),
+                descricao=descricao,
+                chave=chave,
+                tipo=tipo,
+                anoLancamento=anoLancamento,
+                genero1=genero1,
+                genero2=genero2,
+                genero3=genero3
+            )
+            
+            session.add(obra)
+            session.commit()
+            session.refresh(obra)
+            obras=session.exec(select(Obra)).all()
+            return templates.TemplateResponse(request, "listaObras.html", {"obras": obras})
+        else:
+            raise HTTPException(404, " obra encontrada")
 
-@app.post("/post")
+@app.post("/post", response_class=HTMLResponse)
 async def postar(
         request:Request,
         obraNome:str=Form(...),
         tipo:str=Form(...),
         meta:Optional[int]=Form(None),
         visto: Optional[str]=Form(...),
-        reacao:Optional[str]=Form(...),
+        reacao:Optional[str]=Form(None),
         comentarios:Optional[str]=Form(None),
         temUsuario:[bool,str] = Depends(get_active_user)
 ):
     if temUsuario[0]==True:
         with Session(engine) as session:
-            obra = session.exec(select(Obra).where(Obra.nome == obraNome,Obra.tipo==tipo)).first()
+            obra = session.exec(select(Obra).where(Obra.nome == obraNome.lower(),Obra.tipo==tipo)).first()
             usuario = session.exec(select(Usuario).where(Usuario.username == temUsuario[1])).first()
-
+            if not usuario:
+                raise HTTPException(404, "Usuario não encontrado")
             if not obra:
-                obra=Obra(nome=obraNome,tipo=tipo)
+                chave=obraNome.replace(" ","")
+                chave=chave.lower()
+                obra=Obra(nome=obraNome.lower(),chave=chave,tipo=tipo)
                 session.add(obra)
                 session.commit()
                 session.refresh(obra)
@@ -254,53 +260,72 @@ async def postar(
             session.add(post)
             session.commit()
             session.refresh(post)
+            posts= session.exec(select(Post).where(Post.usuario_id == usuario.id)).all()
+            return templates.TemplateResponse(request, "listaObras.html", {"obras": usuario.obras,"posts":posts})
+    
+    return templates.TemplateResponse(
+        request=request, 
+        name="home.html", 
+        context={"pagina":"/login"}
+    )
+@app.get("/listaPost", response_class=HTMLResponse)
+def lista(request: Request,temUsuario:[bool,str] = Depends(get_active_user)):
+    with Session(engine) as session:
+        usuario = session.exec(select(Usuario).where(Usuario.username == temUsuario[1])).first()
+        if temUsuario[0]==False:
             return templates.TemplateResponse(
                 request=request, 
                 name="home.html", 
-                context={"pagina":"/perfil"}
+                context={"pagina":"/login"}
             )
-    else:
+        posts= session.exec(select(Post).where(Post.usuario_id == usuario.id)).all()
+        return templates.TemplateResponse(request, "listaObras.html", {"obras": usuario.obras,"posts":posts})
+
+
+@app.put("/post/{tipo}/{chave}",response_class=HTMLResponse)
+async def mudarPost(
+        request:Request,
+        chave:str,
+        tipo:str,
+        meta:Optional[int]=Form(),
+        visto: Optional[str]=Form(...),
+        reacao:Optional[str]=Form(...),
+        comentarios:Optional[str]=Form(None),
+        temUsuario:[bool,str] = Depends(get_active_user)
+):
+     if temUsuario[0]==True:
+        with Session(engine) as session:
+            obra = session.exec(select(Obra).where(Obra.chave == chave,Obra.tipo==tipo)).first()
+            usuario = session.exec(select(Usuario).where(Usuario.username == temUsuario[1])).first()
+
+            if not obra or not usuario:
+                raise HTTPException(404, "Usuário ou obra não encontrado")
+        
+            query = select(Post).where(Post.usuario_id == usuario.id,
+                                Post.obra_id == obra.id)
+        
+            post = session.exec(query).first()
+        
+            if not post:
+                raise HTTPException(404, "Post não encontrado")
+            if comentarios is not None:
+                post.comentarios=comentarios
+            if reacao is not None:
+                post.reacao=reacao
+            if visto is not None:
+                post.visto=visto
+            if meta is not None:
+                post.meta=meta
+            session.add(post)
+            session.commit()
+            session.refresh(post)
+            return post
+     else:
         return templates.TemplateResponse(
             request=request, 
             name="home.html", 
             context={"pagina":"/login"}
         )
-
-@app.patch("/post",response_class=HTMLResponse)
-async def mudarPost(
-        username:str,
-        obraNome:str,
-        tipo:str,
-        visto: Optional[int],
-        reacao:Optional[int],
-        comentarios:Optional[str]
-):
-     with Session(engine) as session:
-        obra = session.exec(select(Obra).where(Obra.nome == obraNome,Obra.tipo==tipo)).first()
-        usuario = session.exec(select(Usuario).where(Usuario.username == username)).first()
-
-        if not obra or not usuario:
-            raise HTTPException(404, "Usuário ou obra não encontrado")
-    
-        query = select(Post).where(Post.usuario_id == usuario.id,
-                               Post.obra_id == obra.id)
-    
-        post = session.exec(query).first()
-    
-        if not post:
-             raise HTTPException(404, "Post não encontrado")
-        if comentarios is not None:
-             post.comentarios=comentarios
-        if reacao is not None:
-            post.reacao=reacao
-        if visto is not None:
-            post.visto=visto
-        if meta is not None:
-            post.meta=meta
-        session.add(post)
-        session.commit()
-        session.refresh(post)
-        return post
 
 @app.delete("/post")
 async def deletePost(username:str, obraNome:str, tipo:str,):
@@ -344,17 +369,22 @@ async def seguir(
             session.commit()
             session.refresh(seguir)
             
-        return templates.TemplateResponse(
-                request=request, 
-                name="home.html", 
-                context={"pagina":"/perfil"}
-            )
+        return
     else:
         return templates.TemplateResponse(
             request=request, 
             name="home.html", 
             context={"pagina":"/login"}
         )
+    
+@app.get("/seguindo",response_class=HTMLResponse)
+async def listaSeguidores(request:Request,temUsuario:[bool,str] = Depends(get_active_user)):
+    if temUsuario[0]==True:
+        with Session(engine) as session:
+            seguindo= session.exec(select(Usuario)
+                                  .join(Seguir, Seguir.seguidor_id==usuario.id)
+                                  .where(Usuario.id==Seguir.seguindo_id)).all()
+            return templates.TemplateResponse(request, "listaSeguindo.html", {"seguindo":seguindo})
 
 @app.delete("/seguir/{user}")
 async def pararSeguir(
@@ -364,7 +394,7 @@ async def pararSeguir(
     if temUsuario[0]==True:
         with Session(engine) as session:
             seguidor = session.exec(select(Usuario).where(Usuario.username == temUsuario[1])).first()   
-            seguindo = session.exec(select(Usuario).where(Usuario.username == suser)).first()
+            seguindo = session.exec(select(Usuario).where(Usuario.username == user)).first()
             if not seguindo:
                 raise HTTPException(404, "Usuário não encontrado")
             seguir = session.exec(select(Seguir).where(seguidor.id==seguidor_id,seguindo_id==seguindo.id)).first()
